@@ -1,2 +1,16 @@
 #!/bin/bash
 # -*- mode: sh -*-
+
+## Configuration defaults.
+#  Variables set here can be overridden in a few ways:
+#  1. A file at BASHPROF_ROOT named env.
+
+BASHPROF_USE_PYENV=1
+
+env_overrides="$BASHPROF_ROOT/env"
+if [ -f "$env_overrides" ]; then
+    # shellcheck source=/dev/null
+    . "$env_overrides"
+fi
+
+export BASHPROF_USE_PYENV
