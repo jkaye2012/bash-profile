@@ -6,6 +6,7 @@ My personal Bash configuration, batteries included and designed for bootstrappin
 * [Installation](#installation)
 * [Usage](#usage)
 * [Included packages](#included-packages)
+* [Technical details](#technical-details)
 
 ## Overview
 
@@ -22,6 +23,11 @@ from this repository without forking, there are a few things you should know:
 * I cannot guarantee that there will never be a breaking change, though I will try to handle them.
 * Many decisions made in this repository will be based purely on my personal preference. If you don't like them,
   please fork the repository and maintain your own configuration. I am happy to answer any questions you may have.
+
+### Supported distributions
+
+I test the configuration on Debian and CentOS machines. My goal is to keep the configuration distribution-agnostic, so please
+file an issue if some piece of the configuration is broken on a different distribution.
 
 ## Installation
 
@@ -45,3 +51,11 @@ cd ~/bash-profile
 ## Usage
 
 ## Included packages
+
+## Technical details
+
+### How it works
+
+### Environment variables
+
+### Exit codes

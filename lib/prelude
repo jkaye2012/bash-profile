@@ -1,0 +1,37 @@
+#!/bin/bash
+# -*- mode: sh -*-
+
+## Error functions.
+#  These are useful for providing unified error codes across all profile operations.
+
+# Exits the shell with an error code and message.
+# Args:
+# $1 - The error code.
+# $2 - The error message.
+function error {
+    echo "$2"
+    exit "$1"
+}
+
+# All individual error functions accept an error message as their sole argument.
+
+function internal_error {
+    error 254 "$1"
+}
+
+## Import subsystem
+#  Simple wrappers around sourcing to make including external functionality more ergonomic.
+
+# Includes functions from the provided library file.
+# Args:
+# $1 - The filename to include. Must specify a file in /lib.
+# Errors:
+# 254 - Requested module does not exist.
+function import {
+    module="$BASHPROF_LIB/$1"
+    if [ ! -f "$module" ]; then
+        internal_error "Attempted to import module $module, but it does not exist"
+    fi
+    # shellcheck source=/dev/null
+    . "$module"
+}
