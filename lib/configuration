@@ -4,8 +4,11 @@
 ## Configuration defaults.
 #  Variables set here can be overridden in a few ways:
 #  1. A file at BASHPROF_ROOT named env.
+#  2. Explicitly set environment variables.
 
-BASHPROF_USE_PYENV=1
+BASHPROF_VERBOSE="${BASHPROF_VERBOSE:-}"
+BASHPROF_USE_PYENV="${BASHPROF_USE_PYENV:-1}"
+BASHPROF_PYENV_GLOBAL_VERSION="${BASHPROF_PYENV_GLOBAL_VERSION:-3.8.0}"
 
 env_overrides="$BASHPROF_ROOT/env"
 if [ -f "$env_overrides" ]; then
@@ -13,4 +16,6 @@ if [ -f "$env_overrides" ]; then
     . "$env_overrides"
 fi
 
+export BASHPROF_VERBOSE
 export BASHPROF_USE_PYENV
+export BASHPROF_PYENV_GLOBAL_VERSION

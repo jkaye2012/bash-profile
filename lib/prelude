@@ -35,3 +35,39 @@ function import {
     # shellcheck source=/dev/null
     . "$module"
 }
+
+## Logging subsystem
+#  Functions for logging profile output.
+#  Using these functions instead of raw echo/printf calls allows the user to
+#  customize behavior by modifying configuration values.
+
+# Writes to stdout if BASHPROF_VERBOSE is set.
+# Args:
+# $1 - The string to write.
+function verbose {
+    if [ -n "$BASHPROF_VERBOSE" ]; then
+        echo "Verbose: $1"
+    fi
+}
+
+# Writes an important message to the user.
+# For now, this is a simple wrapper around echo, but will allow us to customize
+# functionality in the future should we need to.
+# $1 - The string to write.
+function important {
+    echo "Important: $1"
+}
+
+# Write a warning message to the user.
+# $1 - The string to write.
+function warning {
+    echo "Warning: $1"
+}
+
+# Writes a failure message to the user.
+# This is generally to let them know that some step of the profile application
+# has failed, but the rest of the process will continue.
+# $1 - The string to write.
+function failure {
+    echo "Failure: $1"
+}
