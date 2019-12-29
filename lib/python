@@ -2,14 +2,20 @@
 # -*- mode: sh -*-
 
 PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
+PYENV_VENV="$PYENV_ROOT/plugins/pyenv-virtualenv"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 python_working=0
 
-if [ -n "$BASHPROF_USE_PYENV" ]; then
+if [ -n "$BASHPROF_PYENV_ENABLED" ]; then
     verbose "Configuring Pyenv"
     if [ ! -d "$PYENV_ROOT" ]; then
         important "Couldn't find pyenv at $PYENV_ROOT; performing first-time installation..."
         git clone https://github.com/pyenv/pyenv.git "$PYENV_ROOT" || failure "Failed to clone pyenv"
+    fi
+    if [ ! -d "$PYENV_VENV" ]; then
+        important "pyenv-virtualenv not found; installing..."
+        git clone https://github.com/pyenv/pyenv-virtualenv.git "$PYENV_VENV" || failure "Failed to clone pyenv-venv"
     fi
     PATH="$PYENV_ROOT/bin:$PATH"
     if command -v pyenv 1>/dev/null 2>&1; then
@@ -33,6 +39,61 @@ else
     verbose "Skipping Pyenv configuration; operations requiring Python will not function."
 fi
 
+# Checks if Python functionality is working properly within the current shell.
 function bp_python_working() {
     return "$python_working"
+}
+
+
+# Ensures that a Python virtualenv exists.
+# Args:
+# $1 - The name of the virtualenv.
+function bp_ensure_virtualenv() {
+    if ! bp_python_working; then
+        verbose "Skipped ensure for virtualenv $1; Python not working"
+        return 1
+    fi
+
+    wanted_name="$(pyenv version-name)/envs/$1"
+    if ! pyenv virtualenvs --bare --skip-aliases | grep --quiet "$wanted_name"; then
+        verbose "Creating missing virtualenv $1"
+        pyenv virtualenv --quiet "$1"
+    else
+        return 0
+    fi
+}
+
+# Activates a virtual environment after ensuring that it exists.
+# This is the main entrypoint through which profile modules interact
+# with Python environments. Generally, each module works within its
+# own isolated environment. This prevents different pieces of Python
+# code from interfering with one another at the cost of a little disk
+# space and initial installation time.
+# Args:
+# $1 - The name of the virtual environment.
+function bp_workon() {
+    if ! bp_ensure_virtualenv "$1"; then
+        failure "Virtualenv could not be verified: $1"
+        return 1
+    fi
+    pyenv activate "$1"
+}
+
+# Installs a Python package into the current virtual environment.
+# This will exit with no action if a virtualenv is not currently active.
+# Args:
+# $1 - The name of the package to install.
+function bp_pip_install() {
+    if [ -z "$VIRTUAL_ENV" ]; then
+        warning "not installing $1; no active virtualenv"
+        return 1
+    fi
+    pip install --quiet --disable-pip-version-check "$1"
+}
+
+# Deactivates the currently active virtual environment.
+# This function does not perform any checks or ensurances as it cannot
+# have negative effects on future operations, even if it fails.
+function bp_deactivate() {
+    pyenv deactivate
 }

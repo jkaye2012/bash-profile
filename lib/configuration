@@ -6,9 +6,13 @@
 #  1. A file at BASHPROF_ROOT named env.
 #  2. Explicitly set environment variables.
 
+## Profile-wide
 BASHPROF_VERBOSE="${BASHPROF_VERBOSE:-}"
-BASHPROF_USE_PYENV="${BASHPROF_USE_PYENV:-1}"
+## Python
+BASHPROF_PYENV_ENABLED="${BASHPROF_PYENV_ENABLED:-1}"
 BASHPROF_PYENV_GLOBAL_VERSION="${BASHPROF_PYENV_GLOBAL_VERSION:-3.8.0}"
+## Powerline
+BASHPROF_POWERLINE_VENV="${BASHPROF_POWERLINE_VENV:-powerline}"
 
 env_overrides="$BASHPROF_ROOT/env"
 if [ -f "$env_overrides" ]; then

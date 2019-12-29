@@ -1,0 +1,29 @@
+#!/bin/bash
+# -*- mode: sh -*-
+
+if bp_workon "$BASHPROF_POWERLINE_VENV"; then
+    verbose "ensuring installation of powerline-status"
+    if bp_pip_install powerline-status; then
+        powerline_root="$(pip show powerline-status | grep "Location: " | sed -e 's/^Location: //')"
+        font_dir="$powerline_root/powerline/fonts"
+        verbose "operating with Powerline root: $powerline_root"
+
+        if [ ! -d "$font_dir" ]; then
+            verbose "installing Powerline fonts"
+            git clone https://github.com/powerline/fonts.git --depth=1 "$font_dir"
+            "$font_dir/install.sh"
+        fi
+
+	# TODO: ensure that powerline configuration file is symlinked.
+	# Also have to figure out why fonts aren't working on Pixelbook...
+        export POWERLINE_BASH_CONTINUATION=1
+        export POWERLINE_BASH_SELECT=1
+        powerline-daemon -k
+        powerline-daemon -q
+        # shellcheck source=/dev/null
+        . "$powerline_root/powerline/bindings/bash/powerline.sh"
+    else
+        failure "could not install powerline-status"
+    fi
+    bp_deactivate
+fi

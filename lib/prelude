@@ -53,12 +53,14 @@ function verbose {
 # Writes an important message to the user.
 # For now, this is a simple wrapper around echo, but will allow us to customize
 # functionality in the future should we need to.
+# Args:
 # $1 - The string to write.
 function important {
     echo "Important: $1"
 }
 
 # Write a warning message to the user.
+# Args:
 # $1 - The string to write.
 function warning {
     echo "Warning: $1"
@@ -67,6 +69,7 @@ function warning {
 # Writes a failure message to the user.
 # This is generally to let them know that some step of the profile application
 # has failed, but the rest of the process will continue.
+# Args:
 # $1 - The string to write.
 function failure {
     echo "Failure: $1"
